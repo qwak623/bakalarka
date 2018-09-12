@@ -1,4 +1,6 @@
-﻿using AnyFileRNN;
+// nefunguje zatim jen soubor se starou verzi tridy rnn
+
+using AnyFileRNN;
 using System;
 using System.Collections.Generic;
 using System.Linq;
