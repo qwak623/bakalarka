@@ -1,32 +1,28 @@
-﻿using MathNet.Numerics.LinearAlgebra;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace AnyFileRNN
 {
     class Program
     {
-#region Metadata
+        #region Metadata
 
-        const int numberOfWords = 1000 - 3;
+        const int numberOfWords = 20 - 3;
         const int hiddenDim = 20;
         const double learningRate = 0.0005;
-        const int epochCount = 100;
+        const int epochCount = 4;
         const int seqLen = 20;
         //const string path = "..\\..\\dataset\\tawiki-20180801-pages-articles-multistream.xml";
         //const string path = "..\\..\\dataset\\enwik8";
-        const string path = "..\\..\\dataset\\reddit-comments-2015-08.csv";
+        //const string path = "..\\..\\dataset\\reddit-comments-2015-08.csv";
         //const string path = "..\\..\\dataset\\abc.txt";
-        //const string path = "..\\..\\dataset\\equasions.txt";
+        const string path = "..\\..\\dataset\\equations.txt";
         const string state = "state.xml";
         const string output = "output.txt";
 
-#endregion
+        #endregion
 
         static void Main(string[] args)
         {
@@ -53,7 +49,7 @@ namespace AnyFileRNN
 
             var vocab = new Vocabulary(dictionary.OrderByDescending(s => s.Value).Take(numberOfWords).Select(s => s.Key));
             RNN rnn = new RNN(vocab, vocab.Size, vocab.Size, hiddenDim, learningRate);
-            
+
             // PREPARING TRAINING DATA
             var data = new DataHolder(path, vocab, seqLen);
 
@@ -63,12 +59,11 @@ namespace AnyFileRNN
             for (int i = 0; i < 100; i++)
             {
                 rnn.TrainEpochWithLossWriting(epochCount, data);
-                rnn.Save(state);
+                writer.WriteLine($"{(i + 1) * (epochCount + 1)}____________________________________________________");
                 rnn.TrainEpochWithOutput(writer, data);
-                writer.Write($"_______________{i+1}____________________________________________________");
-                writer.Flush();
             }
 
+            rnn.Save(state);
             writer.Close();
             Console.ReadLine();
         }
