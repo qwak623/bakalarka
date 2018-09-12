@@ -7,12 +7,12 @@ namespace AnyFileRNN
     {
         public List<TrainSequence> epoch { get; set; } = new List<TrainSequence>();
 
-        public DataHolder(string path, Vocabulary vocab, int seqLen = 10)
+        public DataHolder(string path, Vocabulary vocab, int seqLen = 10, bool skipUnknown = false, bool skipWhiteSpace = false)
         {
             using (var reader = new StreamReader(path))
             {
-                for (int i = 0; i < 100; i++)
-                //while (!reader.EndOfStream)
+                //for (int i = 0; i < 100; i++)
+                while (!reader.EndOfStream)
                 {
                     var tokenizer = new Tokenizer(reader.ReadLine());
                     var seq = new TrainSequence();
@@ -21,7 +21,7 @@ namespace AnyFileRNN
                     {
                         if (seq.x.Count == 0)
                             seq.x.Add(vocab.GetStartIndex());
-                        if (vocab.GetIndex(token) == vocab.Size - 1 || token == " ") // TODO aby tu nebyly unknown
+                        if ((!skipUnknown && vocab.GetIndex(token) == vocab.Size - 1 )|| (!skipWhiteSpace && token == " "))
                             continue;
                         seq.x.Add(vocab.GetIndex(token));
                         seq.y.Add(vocab.GetIndex(token));

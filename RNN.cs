@@ -274,6 +274,7 @@ namespace AnyFileRNN
                 BackPropTT(seq.x, seq.y, o);
             }
             Console.WriteLine($"output written.");
+            writer.Flush();
         }
     }
 }
